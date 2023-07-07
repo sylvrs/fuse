@@ -1,0 +1,6 @@
+# local configuration environment
+.env
+# log files
+*.log
+# local dev files
+assets/
