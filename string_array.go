@@ -1,4 +1,4 @@
-package bot
+package fuse
 
 import (
 	"database/sql/driver"

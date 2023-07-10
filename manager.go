@@ -1,11 +1,11 @@
-package bot
+package fuse
 
 import (
 	"errors"
 	"fmt"
 
 	log "github.com/inconshreveable/log15"
-	"github.com/sylvrs/fuse/bot/utils"
+	"github.com/sylvrs/fuse/utils"
 	mysql "gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	gorm_logger "gorm.io/gorm/logger"

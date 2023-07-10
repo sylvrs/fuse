@@ -1,4 +1,4 @@
-package bot
+package fuse
 
 // Service is the interface that all services must implement
 // It defines the methods that are called when the service is started or stopped
