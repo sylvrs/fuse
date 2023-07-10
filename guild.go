@@ -1,14 +1,14 @@
-package bot
+package fuse
 
 import (
 	"fmt"
 
 	"github.com/bwmarrin/discordgo"
 	log "github.com/inconshreveable/log15"
-	"github.com/sylvrs/fuse/bot/command"
-	"github.com/sylvrs/fuse/bot/component"
-	"github.com/sylvrs/fuse/bot/modal"
-	"github.com/sylvrs/fuse/bot/utils"
+	"github.com/sylvrs/fuse/command"
+	"github.com/sylvrs/fuse/component"
+	"github.com/sylvrs/fuse/modal"
+	"github.com/sylvrs/fuse/utils"
 	"gorm.io/gorm"
 )
 

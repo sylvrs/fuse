@@ -8,7 +8,7 @@ import (
 	"github.com/caarlos0/env/v8"
 	log "github.com/inconshreveable/log15"
 	"github.com/joho/godotenv"
-	"github.com/sylvrs/fuse/bot"
+	"github.com/sylvrs/fuse"
 )
 
 const (
@@ -70,7 +70,7 @@ func main() {
 		}
 		envConfig = devConfig.Config
 	}
-	mng, err := bot.NewManager(logger, &bot.Config{
+	mng, err := fuse.NewManager(logger, &fuse.Config{
 		Token:          envConfig.Token,
 		DatabaseString: envConfig.DatabaseString,
 	})

@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/bwmarrin/discordgo"
-	"github.com/sylvrs/fuse/bot/utils"
+	"github.com/sylvrs/fuse/utils"
 )
 
 type ModalHandlerFunc func(s *discordgo.Session, i *discordgo.InteractionCreate) (*discordgo.InteractionResponse, error)
