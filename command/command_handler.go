@@ -37,6 +37,31 @@ func (c *CommandHandler) Init() error {
 		}
 		c.registeredCommands = append(c.registeredCommands, value)
 	}
+	return c.removeUnused()
+}
+
+func (c *CommandHandler) removeUnused() error {
+	existingCmds, err := c.session.ApplicationCommands(c.session.State.Application.ID, c.guild.ID)
+	if err != nil {
+		return err
+	}
+	for _, existing := range existingCmds {
+		// attempt to find the command in the registered commands
+		found := false
+		for _, cmd := range c.registeredCommands {
+			if existing.Name == cmd.Name {
+				found = true
+				break
+			}
+		}
+
+		// if the command was not found, delete it
+		if !found {
+			if err := c.session.ApplicationCommandDelete(c.session.State.User.ID, c.guild.ID, existing.ID); err != nil {
+				return err
+			}
+		}
+	}
 	return nil
 }
 
