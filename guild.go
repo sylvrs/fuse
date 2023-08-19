@@ -60,6 +60,7 @@ func CreateGuildManager(manager *Manager, config *GuildConfiguration) (*GuildMan
 	return guildManager, nil
 }
 
+// Start starts all of the services for the guild and registers all handlers, both component and command
 func (mng *GuildManager) Start() error {
 	for _, service := range mng.services {
 		if err := service.Start(mng); err != nil {
@@ -75,6 +76,7 @@ func (mng *GuildManager) Start() error {
 	return nil
 }
 
+// Stop stops all of the services for the guild and deinitializes the command handler
 func (mng *GuildManager) Stop() error {
 	for _, service := range mng.services {
 		if err := service.Stop(mng); err != nil {
@@ -86,38 +88,63 @@ func (mng *GuildManager) Stop() error {
 	return nil
 }
 
+// FetchServiceConfig fetches the service configuration from the database
+// If the configuration does not exist, it will be created for the guild
+// An example of this in action would be like so:
+//
+// var config MyServiceConfig
+// err := mng.FetchServiceConfig(&config)
+// ...
+func (mng *GuildManager) FetchServiceConfig(config interface{}, defaults ...interface{}) error {
+	return mng.Connection().Where("guild_id=?", mng.guild.ID).Attrs(defaults).FirstOrCreate(config).Error
+}
+
+// SaveServiceConfig saves the service configuration to the database
+func (mng *GuildManager) SaveServiceConfig(config interface{}) error {
+	return mng.Connection().Save(config).Error
+}
+
+// Save saves the built-in guild configuration to the database
 func (mng *GuildManager) Save() error {
 	return mng.Connection().Save(mng.config).Error
 }
 
+// Logger returns the logger for the guild
 func (mng *GuildManager) Logger() log.Logger {
 	return mng.logger
 }
 
+// GlobalManager returns Fuse's global manager instance
 func (mng *GuildManager) GlobalManager() *Manager {
 	return mng.manager
 }
 
+// Connection returns the database connection for the guild
 func (mng *GuildManager) Connection() *gorm.DB {
 	return mng.connection
 }
 
+// Session returns the Discord session for the guild
 func (mng *GuildManager) Session() *discordgo.Session {
 	return mng.session
 }
 
+// BotUser returns the bot user for the guild
 func (mng *GuildManager) BotUser() *discordgo.User {
 	return mng.GlobalManager().BotUser()
 }
 
+// Guild returns the instance of the guild
 func (mng *GuildManager) Guild() *discordgo.Guild {
 	return mng.guild
 }
 
+// CommandHandler returns the command handler for the guild
 func (mng *GuildManager) CommandHandler() *command.CommandHandler {
 	return mng.commandHandler
 }
 
+// ModalHandler returns the modal handler for the guild
 func (mng *GuildManager) ModalHandler() *modal.ModalHandler {
 	return mng.modalHandler
 }
@@ -209,6 +236,7 @@ func (mng *GuildManager) handleListenedComponents(s *discordgo.Session, i *disco
 	}
 }
 
+// ListenForComponent registers a handler for a specific component
 func (mng *GuildManager) ListenForComponent(customId string, handler component.ComponentHandlerFunc) {
 	mng.listenedComponents[customId] = handler
 }

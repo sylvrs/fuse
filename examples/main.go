@@ -1,6 +1,7 @@
 package main
 
 import (
+	"math/rand"
 	"os"
 	"os/signal"
 	"syscall"
@@ -79,7 +80,7 @@ func main() {
 		os.Exit(1)
 	}
 	// register services here
-	// e.g., mng.RegisterService(&bot.PingService{})
+	mng.RegisterService(&PingService{})
 
 	if err := mng.Start(); err != nil {
 		logger.Crit("Failed to start service", "error", err)
@@ -93,4 +94,35 @@ func main() {
 
 	logger.Info("Received shutdown signal. Closing Discord session...")
 	mng.Stop()
+}
+
+// PingService is a service that responds to the ping command
+type PingService struct {
+	config PingServiceConfiguration
+}
+
+// PingServiceConfiguration represents a table in the database that holds the configuration for the ping service in each guild
+type PingServiceConfiguration struct {
+	fuse.ServiceConfiguration
+	RandomNumber int
+}
+
+func (s *PingService) Create(mng *fuse.GuildManager) (fuse.Service, error) {
+	var config PingServiceConfiguration
+	// fetch the service config from the database and assign a random number to it
+	if err := mng.FetchServiceConfig(&config, PingServiceConfiguration{RandomNumber: rand.Int()}); err != nil {
+		return nil, err
+	}
+	return &PingService{config: config}, nil
+}
+
+func (s *PingService) Start(mng *fuse.GuildManager) error {
+
+	// ...
+	return nil
+}
+
+func (s *PingService) Stop(mng *fuse.GuildManager) error {
+	// ...
+	return nil
 }

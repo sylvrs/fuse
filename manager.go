@@ -3,6 +3,7 @@ package fuse
 import (
 	"errors"
 	"fmt"
+	"reflect"
 
 	log "github.com/inconshreveable/log15"
 	"github.com/sylvrs/fuse/utils"
@@ -71,7 +72,7 @@ func (mng *Manager) OnStart(f ManagerStartFunc) {
 // This is because the actual guild services will be created using service.Create()
 func (mng *Manager) RegisterService(s Service) {
 	mng.services = append(mng.services, s)
-	mng.logger.Info(fmt.Sprintf("Registered service '%s'", s.Name()))
+	mng.logger.Info(fmt.Sprintf("Registered service '%s'", reflect.TypeOf(s).Name()))
 }
 
 // CreateServices creates a service for a provided guild manager
@@ -80,7 +81,7 @@ func (mng *Manager) CreateServices(guildManager *GuildManager) []Service {
 	for i, s := range mng.services {
 		service, err := s.Create(guildManager)
 		if err != nil {
-			mng.logger.Error("Failed to create service", "service", s.Name(), "error", err)
+			mng.logger.Error("Failed to create service", "service", reflect.TypeOf(s).Name(), "error", err)
 			continue
 		}
 		services[i] = service
