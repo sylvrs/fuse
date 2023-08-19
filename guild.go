@@ -56,7 +56,11 @@ func CreateGuildManager(manager *Manager, config *GuildConfiguration) (*GuildMan
 		services:           make([]Service, 0),
 	}
 	// register services to guild manager
-	guildManager.services = manager.CreateServices(guildManager)
+	services, err := manager.CreateServices(guildManager)
+	if err != nil {
+		return nil, err
+	}
+	guildManager.services = services
 	return guildManager, nil
 }
 

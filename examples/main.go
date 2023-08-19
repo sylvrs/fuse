@@ -110,7 +110,7 @@ type PingServiceConfiguration struct {
 func (s *PingService) Create(mng *fuse.GuildManager) (fuse.Service, error) {
 	var config PingServiceConfiguration
 	// fetch the service config from the database and assign a random number to it
-	if err := mng.FetchServiceConfig(&config, PingServiceConfiguration{RandomNumber: rand.Int()}); err != nil {
+	if err := mng.FetchServiceConfig(&config, &PingServiceConfiguration{RandomNumber: rand.Int()}); err != nil {
 		return nil, err
 	}
 	return &PingService{config: config}, nil

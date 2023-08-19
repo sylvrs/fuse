@@ -76,17 +76,17 @@ func (mng *Manager) RegisterService(s Service) {
 }
 
 // CreateServices creates a service for a provided guild manager
-func (mng *Manager) CreateServices(guildManager *GuildManager) []Service {
+func (mng *Manager) CreateServices(guildManager *GuildManager) ([]Service, error) {
 	services := make([]Service, len(mng.services))
 	for i, s := range mng.services {
 		service, err := s.Create(guildManager)
 		if err != nil {
 			mng.logger.Error("Failed to create service", "service", reflect.TypeOf(s).Name(), "error", err)
-			continue
+			return nil, err
 		}
 		services[i] = service
 	}
-	return services
+	return services, nil
 }
 
 func (mng *Manager) Member(guildID string) (*discordgo.Member, error) {
