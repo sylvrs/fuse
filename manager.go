@@ -71,7 +71,7 @@ func (mng *Manager) OnStart(f ManagerStartFunc) {
 // This is because the actual guild services will be created using service.Create()
 func (mng *Manager) RegisterService(s Service) {
 	mng.services = append(mng.services, s)
-	mng.logger.Info(fmt.Sprintf("Registered service '%s'", reflect.TypeOf(s).Name()))
+	mng.logger.Info(fmt.Sprintf("Registered service '%s'", reflect.TypeOf(s).Elem().Name()))
 }
 
 // CreateServices creates a service for a provided guild manager
