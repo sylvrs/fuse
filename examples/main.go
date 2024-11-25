@@ -10,6 +10,7 @@ import (
 	log "github.com/inconshreveable/log15"
 	"github.com/joho/godotenv"
 	"github.com/sylvrs/fuse"
+	"gorm.io/driver/mysql"
 )
 
 const (
@@ -71,9 +72,11 @@ func main() {
 		}
 		envConfig = devConfig.Config
 	}
-	mng, err := fuse.NewManager(logger, &fuse.Config{
+
+	
+	dialector := mysql.Open(envConfig.DatabaseString)
+	mng, err := fuse.NewManager(dialector, logger, &fuse.Config{
 		Token:          envConfig.Token,
-		DatabaseString: envConfig.DatabaseString,
 	})
 	if err != nil {
 		logger.Crit("Failed to initialize bot", "error", err)

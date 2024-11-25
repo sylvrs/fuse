@@ -7,7 +7,6 @@ import (
 
 	log "github.com/inconshreveable/log15"
 	"github.com/sylvrs/fuse/utils"
-	mysql "gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	gorm_logger "gorm.io/gorm/logger"
 
@@ -19,8 +18,6 @@ import (
 type Config struct {
 	// The token used to authenticate with Discord
 	Token string
-	// The string used to connect to the database
-	DatabaseString string
 }
 
 type ManagerStartFunc func(*Manager) error
@@ -37,9 +34,9 @@ type Manager struct {
 	services      []Service
 }
 
-func NewManager(logger log.Logger, config *Config) (*Manager, error) {
+func NewManager(dialector gorm.Dialector, logger log.Logger, config *Config) (*Manager, error) {
 	// initialize database
-	database, err := gorm.Open(mysql.Open(config.DatabaseString), &gorm.Config{
+	database, err := gorm.Open(dialector, &gorm.Config{
 		Logger: gorm_logger.Default.LogMode(gorm_logger.Silent),
 	})
 	if err != nil {
