@@ -100,6 +100,7 @@ func (mng *GuildManager) Stop() error {
 // err := mng.FetchServiceConfig(&config)
 // ...
 func (mng *GuildManager) FetchServiceConfig(config interface{}, defaults ...interface{}) error {
+	mng.connection.AutoMigrate(&config)
 	return mng.Connection().Where("guild_id=?", mng.guild.ID).Attrs(defaults).FirstOrCreate(config).Error
 }
 
