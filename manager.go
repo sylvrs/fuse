@@ -38,6 +38,8 @@ func NewManager(dialector gorm.Dialector, logger log.Logger, config *Config) (*M
 	// initialize database
 	database, err := gorm.Open(dialector, &gorm.Config{
 		Logger: gorm_logger.Default.LogMode(gorm_logger.Silent),
+		// todo: remove this when we properly handle creating tables
+		DisableForeignKeyConstraintWhenMigrating: true,
 	})
 	if err != nil {
 		return nil, err
