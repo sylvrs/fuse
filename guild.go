@@ -101,7 +101,7 @@ func (mng *GuildManager) Stop() error {
 // ...
 func (mng *GuildManager) FetchServiceConfig(config interface{}, defaults ...interface{}) error {
 	mng.connection.AutoMigrate(&config)
-	return mng.Connection().Where("guild_id=?", mng.guild.ID).Attrs(defaults).FirstOrCreate(config).Error
+	return mng.Connection().Where(&ServiceConfiguration{GuildId: mng.guild.ID}).Attrs(defaults).FirstOrCreate(config).Error
 }
 
 // SaveServiceConfig saves the service configuration to the database
