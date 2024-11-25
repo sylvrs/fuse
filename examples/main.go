@@ -7,10 +7,10 @@ import (
 	"syscall"
 
 	"github.com/caarlos0/env/v8"
+	"github.com/glebarez/sqlite"
 	log "github.com/inconshreveable/log15"
 	"github.com/joho/godotenv"
 	"github.com/sylvrs/fuse"
-	"gorm.io/driver/mysql"
 )
 
 const (
@@ -26,8 +26,8 @@ var (
 
 // environmentConfig is the struct used to parse the environment variables
 type environmentConfig struct {
-	Token          string `env:"TOKEN,required"`
-	DatabaseString string `env:"DATABASE_STRING,required"`
+	Token        string `env:"TOKEN,required"`
+	DatabaseName string `env:"DATABASE_NAME,required"`
 }
 
 // devEnvironmentConfig is the struct used to parse the development environment variables
@@ -73,10 +73,9 @@ func main() {
 		envConfig = devConfig.Config
 	}
 
-	
-	dialector := mysql.Open(envConfig.DatabaseString)
+	dialector := sqlite.Open(envConfig.DatabaseName)
 	mng, err := fuse.NewManager(dialector, logger, &fuse.Config{
-		Token:          envConfig.Token,
+		Token: envConfig.Token,
 	})
 	if err != nil {
 		logger.Crit("Failed to initialize bot", "error", err)

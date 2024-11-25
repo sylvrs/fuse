@@ -228,6 +228,8 @@ func (mng *Manager) setupHandlers() {
 }
 
 func (mng *Manager) loadGuilds() error {
+	// ensure we create the guild configuration table before loading guilds
+	mng.connection.AutoMigrate(&GuildConfiguration{})
 	// load guilds from database
 	var guilds []*GuildConfiguration
 	if err := mng.connection.Find(&guilds).Error; err != nil {
