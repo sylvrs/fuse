@@ -14,8 +14,8 @@ func UpdateMessage(session *discordgo.Session, current *discordgo.MessageSend, s
 		ID:         sent.ID,
 		Channel:    sent.ChannelID,
 		Content:    &current.Content,
-		Embeds:     current.Embeds,
-		Components: current.Components,
+		Embeds:     &current.Embeds,
+		Components: &current.Components,
 	})
 	return err
 }
