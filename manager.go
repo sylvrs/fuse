@@ -143,10 +143,15 @@ func (mng *Manager) onGuildJoin(event *discordgo.GuildCreate) {
 }
 
 func (mng *Manager) onGuildLeave(event *discordgo.GuildDelete) {
-	mng.Logger().Info("Left guild", "guild", event.ID)
+	var guildConfig GuildConfiguration
+	if mng.Connection().Where("guild_id = ?", event.Guild.ID).Find(&guildConfig).RowsAffected == 0 {
+		mng.Logger().Error("Received guild deletion event but no associated guild found in database", "guild", event.Guild)
+		return
+	}
 	if err := mng.deleteGuild(event.Guild); err != nil {
 		mng.Logger().Error("Failed to delete guild", "guild", event.ID, "error", err)
 	}
+	mng.Logger().Info("Left guild", "guild", event.ID)
 }
 
 func (mng *Manager) onReceiveCommand(event *discordgo.InteractionCreate) {
