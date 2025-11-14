@@ -1,16 +1,21 @@
 package main
 
 import (
+	"errors"
+	"fmt"
 	"math/rand"
 	"os"
 	"os/signal"
 	"syscall"
 
+	"github.com/bwmarrin/discordgo"
 	"github.com/caarlos0/env/v8"
 	"github.com/glebarez/sqlite"
 	log "github.com/inconshreveable/log15"
 	"github.com/joho/godotenv"
 	"github.com/sylvrs/fuse"
+	"github.com/sylvrs/fuse/command"
+	"github.com/sylvrs/fuse/utils"
 )
 
 const (
@@ -107,6 +112,7 @@ type PingService struct {
 type PingServiceConfiguration struct {
 	fuse.ServiceConfiguration
 	RandomNumber int
+	CachedInput  fuse.StringArray `gorm:"type:TEXT"`
 }
 
 func (s *PingService) Create(mng *fuse.GuildManager) (fuse.Service, error) {
@@ -124,8 +130,72 @@ func (s *PingService) Create(mng *fuse.GuildManager) (fuse.Service, error) {
 }
 
 func (s *PingService) Start(mng *fuse.GuildManager) error {
+
+	permission := int64(discordgo.PermissionAdministrator)
+	mng.CommandHandler().Register(&command.Command{
+		Name:               "cache",
+		Description:        "Adds a given input to the database for later listing",
+		DefaultPermissions: &permission,
+		Options: []*discordgo.ApplicationCommandOption{
+			{
+				Type:        discordgo.ApplicationCommandOptionString,
+				Name:        "value",
+				Description: "The value to cache",
+				Required:    true,
+			},
+		},
+		Handler: func(_ *discordgo.Session, i *discordgo.InteractionCreate) (*discordgo.InteractionResponse, error) {
+			return s.HandleCacheCommand(mng, i)
+		},
+	})
+	mng.CommandHandler().Register(&command.Command{
+		Name:               "viewcache",
+		Description:        "Lists the values in the cache",
+		DefaultPermissions: &permission,
+		Options:            []*discordgo.ApplicationCommandOption{},
+		Handler: func(_ *discordgo.Session, i *discordgo.InteractionCreate) (*discordgo.InteractionResponse, error) {
+			return s.HandleViewCacheCommand(mng, i)
+		},
+	})
+
 	// ...
 	return nil
+}
+
+func (s *PingService) HandleCacheCommand(mng *fuse.GuildManager, i *discordgo.InteractionCreate) (*discordgo.InteractionResponse, error) {
+	value := i.ApplicationCommandData().Options[0].StringValue()
+	if value == "" {
+		return nil, errors.New("Empty input given")
+	}
+
+	s.config.CachedInput = append(s.config.CachedInput, value)
+	mng.SaveServiceConfig(s.config)
+
+	return &discordgo.InteractionResponse{
+		Type: discordgo.InteractionResponseChannelMessageWithSource,
+		Data: &discordgo.InteractionResponseData{
+			Embeds: []*discordgo.MessageEmbed{
+				utils.SuccessAsEmbed(fmt.Sprintf("Added %s to cache list", value)),
+			},
+		},
+	}, nil
+}
+
+func (s *PingService) HandleViewCacheCommand(mng *fuse.GuildManager, i *discordgo.InteractionCreate) (*discordgo.InteractionResponse, error) {
+	data := ""
+	for _, line := range s.config.CachedInput {
+		data += fmt.Sprintf("- %s\n", line)
+	}
+
+	return &discordgo.InteractionResponse{
+		Type: discordgo.InteractionResponseChannelMessageWithSource,
+		Data: &discordgo.InteractionResponseData{
+			Embeds: []*discordgo.MessageEmbed{
+				utils.SuccessAsEmbed(data),
+			},
+		},
+	}, nil
+
 }
 
 func (s *PingService) Stop(mng *fuse.GuildManager) error {

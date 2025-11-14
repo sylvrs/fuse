@@ -15,12 +15,15 @@ const (
 )
 
 func (a *StringArray) Scan(value any) error {
-	bytes, ok := value.([]byte)
-	if !ok {
-		return errors.New("src value cannot cast to []byte")
+	switch v := value.(type) {
+	case []byte:
+		*a = strings.Split(string(v), arraySeparator)
+		return nil
+	case string:
+		*a = strings.Split(v, arraySeparator)
+		return nil
 	}
-	*a = strings.Split(string(bytes), arraySeparator)
-	return nil
+	return errors.New("src value cannot cast to []byte or string")
 }
 
 func (a StringArray) Value() (driver.Value, error) {

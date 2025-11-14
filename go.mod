@@ -5,18 +5,16 @@ go 1.20
 require (
 	github.com/bwmarrin/discordgo v0.28.1
 	github.com/caarlos0/env/v8 v8.0.0
+	github.com/glebarez/sqlite v1.11.0
 	github.com/inconshreveable/log15 v2.16.0+incompatible
 	github.com/joho/godotenv v1.5.1
 	golang.org/x/exp v0.0.0-20230522175609-2e198f4a06a1
-	gorm.io/driver/mysql v1.5.1
 	gorm.io/gorm v1.25.7
 )
 
 require (
 	github.com/dustin/go-humanize v1.0.1 // indirect
 	github.com/glebarez/go-sqlite v1.21.2 // indirect
-	github.com/glebarez/sqlite v1.11.0 // indirect
-	github.com/go-sql-driver/mysql v1.7.0 // indirect
 	github.com/go-stack/stack v1.8.1 // indirect
 	github.com/google/uuid v1.3.0 // indirect
 	github.com/gorilla/websocket v1.4.2 // indirect
