@@ -225,7 +225,7 @@ func (mng *Manager) setupHandlers() {
 	mng.session.AddHandler(func(s *discordgo.Session, event *discordgo.GuildDelete) { mng.onGuildLeave(event) })
 	mng.session.AddHandler(func(s *discordgo.Session, event *discordgo.InteractionCreate) {
 		switch event.Type {
-		case discordgo.InteractionApplicationCommand:
+		case discordgo.InteractionApplicationCommand, discordgo.InteractionApplicationCommandAutocomplete:
 			mng.onReceiveCommand(event)
 		case discordgo.InteractionModalSubmit:
 			mng.onReceiveModal(event)
