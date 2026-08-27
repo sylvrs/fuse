@@ -3,7 +3,7 @@ module github.com/sylvrs/fuse
 go 1.20
 
 require (
-	github.com/bwmarrin/discordgo v0.28.1
+	github.com/bwmarrin/discordgo v0.29.0
 	github.com/caarlos0/env/v8 v8.0.0
 	github.com/glebarez/sqlite v1.11.0
 	github.com/inconshreveable/log15 v2.16.0+incompatible
