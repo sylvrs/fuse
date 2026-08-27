@@ -15,5 +15,5 @@ type Service interface {
 // This is not always required but has a configured guild ID field for convenience
 type ServiceConfiguration struct {
 	// GuildID is the ID of the guild and is used as the primary key
-	GuildId string `gorm:"primary_key"`
+	GuildID string `gorm:"primary_key"`
 }

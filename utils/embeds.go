@@ -21,6 +21,9 @@ func UpdateMessage(session *discordgo.Session, current *discordgo.MessageSend, s
 }
 
 func MessagesMatch(current *discordgo.MessageSend, sent *discordgo.Message) bool {
+	if current == nil || sent == nil {
+		return false
+	}
 	clonedCurrent := cloneMessage(current).(*discordgo.MessageSend)
 	clonedSent := cloneMessage(sent).(*discordgo.Message)
 	currentMarshaled, _ := discordgo.Marshal(clonedCurrent)
@@ -33,6 +36,9 @@ func MessagesMatch(current *discordgo.MessageSend, sent *discordgo.Message) bool
 }
 
 func cloneMessage(m any) any {
+	if m == nil {
+		return nil
+	}
 	switch m := m.(type) {
 	case *discordgo.Message:
 		cloned := *m
@@ -55,6 +61,7 @@ func cloneMessage(m any) any {
 	}
 }
 
+// ErrorAsEmbed returns an error embed.
 func ErrorAsEmbed(message string) *discordgo.MessageEmbed {
 	return &discordgo.MessageEmbed{
 		Title:       "Error",

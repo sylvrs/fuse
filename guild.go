@@ -102,7 +102,7 @@ func (mng *GuildManager) Stop() error {
 func (mng *GuildManager) FetchServiceConfig(config interface{}, defaults ...interface{}) error {
 	mng.connection.AutoMigrate(config)
 	// Ensure that our guild ID is set in the service configuration
-	defaults = append(defaults, ServiceConfiguration{GuildId: mng.guild.ID})
+	defaults = append(defaults, ServiceConfiguration{GuildID: mng.guild.ID})
 	return mng.Connection().Where("guild_id = ?", mng.guild.ID).Attrs(defaults...).FirstOrCreate(config).Error
 }
 

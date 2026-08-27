@@ -8,6 +8,7 @@ require (
 	github.com/glebarez/sqlite v1.11.0
 	github.com/inconshreveable/log15 v2.16.0+incompatible
 	github.com/joho/godotenv v1.5.1
+	github.com/magefile/mage v1.17.2
 	golang.org/x/exp v0.0.0-20230522175609-2e198f4a06a1
 	gorm.io/gorm v1.25.7
 )

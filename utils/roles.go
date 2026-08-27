@@ -6,9 +6,18 @@ import (
 	"github.com/bwmarrin/discordgo"
 )
 
-// GetRoleById returns the role with the given name or an error if it doesn't exist
-func GetRoleByName(s *discordgo.Session, guildId string, name string) (*discordgo.Role, error) {
-	roles, err := s.GuildRoles(guildId)
+// fetchGuildRoles returns the guild's roles from in-memory (if possible)
+// If it can't and/or it isn't cached, it will fall back to the REST API.
+func fetchGuildRoles(s *discordgo.Session, guildID string) ([]*discordgo.Role, error) {
+	if guild, err := s.State.Guild(guildID); err == nil {
+		return guild.Roles, nil
+	}
+	return s.GuildRoles(guildID)
+}
+
+// GetRoleByName returns the role with the given name or an error if it doesn't exist
+func GetRoleByName(s *discordgo.Session, guildID string, name string) (*discordgo.Role, error) {
+	roles, err := fetchGuildRoles(s, guildID)
 	if err != nil {
 		return nil, err
 	}
@@ -20,9 +29,9 @@ func GetRoleByName(s *discordgo.Session, guildId string, name string) (*discordg
 	return nil, fmt.Errorf("role not found")
 }
 
-// GetRoleById returns the role with the given id or an error if it doesn't exist
-func GetRoleById(s *discordgo.Session, guildId string, id string) (*discordgo.Role, error) {
-	roles, err := s.GuildRoles(guildId)
+// GetRoleByID returns the role with the given id or an error if it doesn't exist
+func GetRoleByID(s *discordgo.Session, guildID string, id string) (*discordgo.Role, error) {
+	roles, err := fetchGuildRoles(s, guildID)
 	if err != nil {
 		return nil, err
 	}
@@ -45,8 +54,8 @@ func HasRole(s *discordgo.Session, member *discordgo.Member, role *discordgo.Rol
 }
 
 // GetMemberRoles returns the roles of the member in the given guild
-func GetMemberRoles(s *discordgo.Session, guildId string, member *discordgo.Member) ([]*discordgo.Role, error) {
-	roles, err := s.GuildRoles(guildId)
+func GetMemberRoles(s *discordgo.Session, guildID string, member *discordgo.Member) ([]*discordgo.Role, error) {
+	roles, err := fetchGuildRoles(s, guildID)
 	if err != nil {
 		return nil, err
 	}

@@ -16,6 +16,9 @@ const (
 
 func (a *StringArray) Scan(value any) error {
 	switch v := value.(type) {
+	case nil:
+		*a = nil
+		return nil
 	case []byte:
 		*a = strings.Split(string(v), arraySeparator)
 		return nil
